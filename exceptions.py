@@ -1,0 +1,2 @@
+class BadExpenseException(Exception):
+    pass
