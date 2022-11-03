@@ -1,9 +1,11 @@
 from fastapi import Depends, HTTPException, APIRouter
 from sqlmodel import Session, select
 
-from db import get_session
+from db import get_session, get_count
 from schemas import GastoExtra, GastoExtraInput, User
-from routers.auth import get_current_user
+from routers.api.auth import get_current_user
+from list_response_models.list_response_model import ListResponseModel
+from helpers.egresos_helper import EgresosHelper
 
 router = APIRouter(prefix="/api/gasto-extra", tags=["gastos_extras"])
 
@@ -18,11 +20,14 @@ def add_gasto_extra(gasto_extra_input: GastoExtraInput,
     return new_gasto_extra
 
 
-@router.get("/")
+@router.get("/", response_model=ListResponseModel)
 def get_gastos_extras(session: Session = Depends(get_session), user: User = Depends(get_current_user)) -> list:
     """Gets gasto_extras from DB"""
     query = select(GastoExtra)
-    return session.exec(query).all()
+    gastos_extras = session.exec(query.order_by(GastoExtra.id.desc())).all()
+    count = get_count(session, query)
+    total = EgresosHelper.get_total(gastos_extras)
+    return ListResponseModel(data=gastos_extras, summary={'total': total}, count=count)
 
 
 @router.get("/{id}", response_model=GastoExtra)

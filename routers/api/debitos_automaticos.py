@@ -3,9 +3,11 @@ from datetime import date
 from fastapi import Depends, HTTPException, APIRouter
 from sqlmodel import Session, select
 
-from db import get_session
+from db import get_session, get_count
+from helpers.egresos_helper import EgresosHelper
+from list_response_models.list_response_model import ListResponseModel
 from schemas import DebitoAutomatico, DebitoAutomaticoInput, User
-from routers.auth import get_current_user
+from routers.api.auth import get_current_user
 
 router = APIRouter(prefix="/api/debito-automatico", tags=["debitos_automaticos"])
 
@@ -21,14 +23,18 @@ def add_debito_automatico(debito_automatico_input: DebitoAutomaticoInput,
     return new_debito_automatico
 
 
-@router.get("/")
+@router.get("/", response_model=ListResponseModel)
 def get_debito_automaticos(session: Session = Depends(get_session), categoria_id: int = None,
                            user: User = Depends(get_current_user)) -> list:
     """Gets debitos automaticos from DB"""
     query = select(DebitoAutomatico)
     if categoria_id != None:
         query = query.filter(DebitoAutomatico.categoria_id == categoria_id)
-    return session.exec(query).all()
+    debitos_automaticos = session.exec(query.order_by(DebitoAutomatico.id.desc())).all()
+    count = get_count(session, query)
+    total = EgresosHelper.get_total(debitos_automaticos)
+    return ListResponseModel(data=debitos_automaticos, summary={'total': total}, count=count)
+    #return session.exec(query).all()
 
 
 @router.get("/{id}", response_model=DebitoAutomatico)

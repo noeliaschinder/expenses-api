@@ -1,0 +1,65 @@
+{% extends 'main.html' %}
+{% block content %}
+<form id="mainForm"">
+    <input type="hidden" name="id" value="{{entityId}}" id="entityId">
+    <input type="hidden" name="entity" value="{{entity}}" id="entity">
+    <input type="hidden" name="action" value="{{action}}" id="action">
+
+    {% for header in view_config %}
+        <div class="mb-3">
+            {% if fields_config[header]['type'] == 'text' %}
+                <label for="{{header}}" class="form-label">{{fields_config[header]['label']}}</label>
+                <input type="{{fields_config[header]['type']}}" class="form-control {{fields_config[header]['submit_method']}}-param" id="{{header}}"
+                       {% if fields_config[header]['required'] == true %}required{% endif %}
+                   aria-describedby="{{header}}Help" name="{{header}}"
+                    value="{{entityObject[header]}}"
+            >
+                <div id="{{header}}Help" class="form-text">{{fields_config[header]['helpMsg']}}</div>
+            {% elif fields_config[header]['type'] == 'number' %}
+                <label for="{{header}}" class="form-label">{{fields_config[header]['label']}}</label>
+                <input type="number" class="form-control {{fields_config[header]['submit_method']}}-param" id="{{header}}" step="0.01"
+                       {% if fields_config[header]['required'] == true %}required{% endif %}
+                   aria-describedby="{{header}}Help" name="{{header}}"
+                    value="{{entityObject[header]}}"
+                >
+                <div id="{{header}}Help" class="form-text">{{fields_config[header]['helpMsg']}}</div>
+            {% elif fields_config[header]['type'] == 'select' %}
+                <label for="{{header}}" class="form-label">{{fields_config[header]['label']}}</label>
+                <select name="{{header}}" id="{{header}}" aria-label="Default select example"
+                        class="form-select source-{{fields_config[header]['source']['type']}} {{fields_config[header]['submit_method']}}-param"
+                        data-entity="{{fields_config[header]['source']['entity']}}" data-value="{{entityObject[header]}}"
+                        {% if fields_config[header]['required'] == true %}required{% endif %}
+                >
+                  <option selected disabled value="">Seleccione una opción</option>
+                {% if fields_config[header]['source']['type'] == 'fixed' %}
+                    {% for option in fields_config[header]['source']['options'] %}
+                        <option value="{{option['value']}}">{{option['label']}}</option>
+                    {% endfor %}
+                {% endif %}
+                </select>
+            {% elif fields_config[header]['type'] == 'date' or fields_config[header]['type'] == 'month' %}
+                <label for="{{header}}" class="form-label">{{fields_config[header]['label']}}</label>
+                <input type="{{fields_config[header]['type']}}"
+                       class="form-control input-{{fields_config[header]['type']}} {{fields_config[header]['submit_method']}}-param" id="{{header}}"
+                       {% if fields_config[header]['required'] == true %}required{% endif %}
+                   aria-describedby="{{header}}Help" name="{{header}}"
+                    value="{{entityObject[header]}}"
+                >
+                <div id="{{header}}Help" class="form-text">{{fields_config[header]['helpMsg']}}</div>
+            {% elif fields_config[header]['type'] == 'password' %}
+                <label for="{{header}}" class="form-label">{{fields_config[header]['label']}}</label>
+                <input type="password" class="form-control" id="{{header}}">
+            {% endif %}
+        </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary" id="enviar-y-agregar-nuevo">Enviar y agregar nuevo</button>
+    <button type="submit" class="btn btn-primary" id="enviar-y-volver-al-listado">Enviar y volver al listado</button>
+
+</form>
+
+{% endblock %}
+
+{% block custom_js %}
+<script src="{{ url_for('static', path='/js/common.js') }}"></script>
+<script src="{{ url_for('static', path='/js/form.js') }}"></script>
+{% endblock %}

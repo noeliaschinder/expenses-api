@@ -1,9 +1,11 @@
 from fastapi import Depends, HTTPException, APIRouter
 from sqlmodel import Session, select
 
-from db import get_session
+from db import get_session, get_count
+from helpers.egresos_helper import EgresosHelper
+from list_response_models.list_response_model import ListResponseModel
 from schemas import IngresoFijo, IngresoFijoInput, User
-from routers.auth import get_current_user
+from routers.api.auth import get_current_user
 
 router = APIRouter(prefix="/api/ingreso-fijo", tags=["ingresos_fijos"])
 
@@ -18,11 +20,14 @@ def add_ingreso_fijo(ingreso_fijo_input: IngresoFijoInput,
     return new_ingreso_fijo
 
 
-@router.get("/")
+@router.get("/", response_model=ListResponseModel)
 def get_ingresos_fijos(session: Session = Depends(get_session), user: User = Depends(get_current_user)) -> list:
     """Gets ingreso_fijos from DB"""
     query = select(IngresoFijo)
-    return session.exec(query).all()
+    ingresos_fijos = session.exec(query.order_by(IngresoFijo.id.desc())).all()
+    count = get_count(session, query)
+    total = EgresosHelper.get_total(ingresos_fijos)
+    return ListResponseModel(data=ingresos_fijos, summary={'total': total}, count=count)
 
 
 @router.get("/{id}", response_model=IngresoFijo)

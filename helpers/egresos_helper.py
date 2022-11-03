@@ -99,6 +99,7 @@ class EgresosHelper():
 
         return gastos_del_periodo
 
+
     @classmethod
     def procesar_gasto_tarjeta(cls, gasto_tarjeta: GastoTarjeta, periodo_a_aplicar: PeriodoAplicacionConsumo,
                                importe_cuota: float | None = None,

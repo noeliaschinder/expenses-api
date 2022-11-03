@@ -1,0 +1,34 @@
+{% extends 'main.html' %}
+{% block content %}
+    <div class="col">
+        <div class="col">
+            <div class="card-footer">
+                <a href="/{{entity}}/add" class="btn btn-primary">Nuevo</a>
+            </div>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                {% for header in view_config %}
+                    <th scope="col">{{header}}</th>
+                {% endfor %}
+                <th scope="col">editar</th>
+                <th scope="col">borrar</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in rows %}
+                <tr>
+                    <th scope="row">{{row.id}}</th>
+                    {% for header in view_config %}
+                        <th scope="row">{{row[header]}}</th>
+                    {% endfor %}
+                    <th scope="row"><a href="/{{entity}}/edit/{{row.id}}">editar</a></th>
+                    <th scope="row"><a href="/{{entity}}/delete/{{row.id}}" onclick="return confirm('Are you sure you want to delete this item?');">borrar</a></th>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

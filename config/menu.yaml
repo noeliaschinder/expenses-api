@@ -1,0 +1,35 @@
+gastos:
+  options:
+    gasto-fijo:
+      actions:
+        -add
+    gasto-extra:
+      actions:
+        -add
+    gasto-tarjeta:
+      actions:
+        -add
+    debito-automatico:
+      actions:
+        -add
+ingresos:
+  options:
+    ingreso-fijo:
+      actions:
+        -add
+    ingreso-extra:
+      actions:
+        -add
+balances:
+  options:
+    balance-listado:
+      actions:
+        - list
+    balance-mes-en-curso:
+      actions:
+        -list
+tarjetas:
+  options:
+    tarjeta:
+      actions:
+        -add

@@ -6,9 +6,10 @@ from db import get_session, get_count
 from schemas import GastoTarjeta, GastoTarjetaInput, GastoTarjetaOutput, User
 from helpers.egresos_helper import EgresosHelper
 from enums import PeriodoAplicacionConsumo
-from routers.auth import get_current_user
+from routers.api.auth import get_current_user
 from exceptions import BadExpenseException
-from list_response_model import ListResponseModel
+from list_response_models.list_response_model import ListResponseModel
+from list_response_models.gasto_tarjeta_list_response_model import GastoTarjetaListResponseModel
 
 router = APIRouter(prefix="/api/gasto-tarjeta", tags=["gastos_tarjetas"])
 
@@ -22,13 +23,14 @@ def add_gasto_tarjeta(periodo_aplicacion: PeriodoAplicacionConsumo, gasto_tarjet
     if new_gasto_tarjeta.fecha > today:
         raise BadExpenseException("Expense date is greater than today's date")
     EgresosHelper.procesar_gasto_tarjeta(new_gasto_tarjeta, periodo_aplicacion, importe_cuota, nro_cuota)
+    new_gasto_tarjeta.fecha = new_gasto_tarjeta.fecha.replace('-','')
     session.add(new_gasto_tarjeta)
     session.commit()
     session.refresh(new_gasto_tarjeta)
     return new_gasto_tarjeta
 
 
-@router.get("/", response_model=ListResponseModel)
+@router.get("/", response_model=GastoTarjetaListResponseModel)
 def get_gastos_tarjetas(session: Session = Depends(get_session), consumos_activos: bool = None,
                         tarjeta_id: int = None, categoria_id: int = None,
                         user: User = Depends(get_current_user)) -> list:
@@ -47,7 +49,7 @@ def get_gastos_tarjetas(session: Session = Depends(get_session), consumos_activo
     gastos_tarjetas = session.exec(query.order_by(GastoTarjeta.id.desc())).all()
     count = get_count(session, query)
     total = EgresosHelper.get_total(gastos_tarjetas)
-    return ListResponseModel(data=gastos_tarjetas, summary={'total': total}, count=count)
+    return GastoTarjetaListResponseModel(data=gastos_tarjetas, summary={'total': total}, count=count)
 
 
 @router.get("/{id}", response_model=GastoTarjetaOutput)

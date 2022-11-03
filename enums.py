@@ -2,6 +2,6 @@ from enum import Enum
 
 
 class PeriodoAplicacionConsumo(Enum):
-    PROXIMO_MES = 'proximo mes (actual + 1)'
-    SIGUIENTE_MES = 'otro mes (actual + 2)'
+    PROXIMO_MES = 'proximo_mes'
+    SIGUIENTE_MES = 'siguiente_mes'
     ACTUAL = 'actual'

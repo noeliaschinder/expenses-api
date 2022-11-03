@@ -1,0 +1,353 @@
+gasto-fijo:
+  fields:
+    concepto:
+      type: text
+      label: Concepto
+      required: true
+      #helpMsg: 'lddsdsdssd'
+    importe:
+      type: number
+      label: Importe
+      required: true
+    categoria_id:
+      type: select
+      label: Categoria
+      required: true
+      source:
+        type: ajax-call
+        entity: gasto-categoria
+    periodo_inicio:
+      label: Mes de Inicio
+      type: month
+    periodo_fin:
+      label: Mes de Finalización
+      type: month
+  views:
+    add:
+      fields:
+        - importe
+        - concepto
+        - categoria_id
+        - periodo_inicio
+        - periodo_fin
+    edit:
+      fields:
+        - importe
+        - concepto
+        - categoria_id
+        - periodo_inicio
+        - periodo_fin
+    list:
+      fields:
+        - importe
+        - concepto
+      actions:
+        - edit
+        - delete
+gasto-extra:
+  fields:
+    concepto:
+      type: text
+      label: Concepto
+      required: true
+    importe:
+      type: number
+      label: Importe
+      required: true
+    categoria_id:
+      type: select
+      label: Categoria
+      required: true
+      source:
+        type: ajax-call
+        entity: gasto-categoria
+    fecha:
+      label: Fecha
+      type: date
+  views:
+    add:
+      fields:
+        - importe
+        - concepto
+        - categoria_id
+        - fecha
+    edit:
+      fields:
+        - importe
+        - concepto
+        - categoria_id
+        - fecha
+    list:
+      fields:
+        - importe
+        - concepto
+      actions:
+        - edit
+        - delete
+gasto-tarjeta:
+  query_filters:
+    consumos_activos:
+      default: true
+  fields:
+    concepto:
+      type: text
+      label: Concepto
+      required: true
+      #helpMsg: 'lddsdsdssd'
+    importe:
+      type: number
+      label: Importe cuota
+      required: false
+    importe_total:
+      type: number
+      label: Importe total
+      required: false
+    cant_cuotas:
+      type: number
+      label: Cant. cuotas
+      required: true
+    tarjeta_id:
+      type: select
+      label: Tarjeta
+      required: true
+      source:
+        type: ajax-call
+        entity: tarjeta
+    categoria_id:
+      type: select
+      label: Categoria
+      required: true
+      source:
+        type: ajax-call
+        entity: gasto-categoria
+    fecha:
+      label: Fecha
+      type: date
+    periodo_aplicacion:
+      type: select
+      label: Periodo aplic.
+      required: true
+      submit_method: get
+      source:
+        type: ajax-call
+        entity: periodo-aplicacion-consumo
+    nro_cuota:
+      type: number
+      label: Nro. cuota
+      required: false
+      submit_method: get
+    importe_cuota:
+      type: number
+      label: Importe cuota
+      required: false
+      submit_method: get
+  views:
+    add:
+      fields:
+        - importe_total
+        - cant_cuotas
+        - concepto
+        - tarjeta_id
+        - categoria_id
+        - fecha
+        - periodo_aplicacion
+        - nro_cuota
+        - importe_cuota
+    edit:
+      fields:
+        - importe_total
+        - cant_cuotas
+        - concepto
+        - tarjeta_id
+        - categoria_id
+        - fecha
+    list:
+      fields:
+        - fecha
+        - nro_cuota
+        - cant_cuotas
+        - concepto
+        - importe
+        - importe_total
+      actions:
+        - edit
+        - delete
+debito-automatico:
+  fields:
+    concepto:
+      type: text
+      label: Concepto
+      required: true
+      #helpMsg: 'lddsdsdssd'
+    importe:
+      type: number
+      label: Importe
+      required: true
+    tarjeta_id:
+      type: select
+      label: Tarjeta
+      required: true
+      source:
+        type: ajax-call
+        entity: tarjeta
+    categoria_id:
+      type: select
+      label: Categoria
+      required: true
+      source:
+        type: ajax-call
+        entity: gasto-categoria
+    periodo_inicio:
+      label: Mes de Inicio
+      type: month
+    periodo_fin:
+      label: Mes de Finalización
+      type: month
+  views:
+    add:
+      fields:
+        - importe
+        - concepto
+        - tarjeta_id
+        - categoria_id
+        - periodo_inicio
+        - periodo_fin
+    edit:
+      fields:
+        - importe
+        - concepto
+        - tarjeta_id
+        - categoria_id
+        - periodo_inicio
+        - periodo_fin
+    list:
+      fields:
+        - importe
+        - concepto
+      actions:
+        - edit
+        - delete
+ingreso-fijo:
+  fields:
+    concepto:
+      type: text
+      label: Concepto
+      required: true
+      #helpMsg: 'lddsdsdssd'
+    importe:
+      type: number
+      label: Importe
+      required: true
+  views:
+    add:
+      fields:
+        - importe
+        - concepto
+    edit:
+      fields:
+        - importe
+        - concepto
+    list:
+      fields:
+        - importe
+        - concepto
+      actions:
+        - edit
+        - delete
+ingreso-extra:
+  fields:
+    concepto:
+      type: text
+      label: Concepto
+      required: true
+      #helpMsg: 'lddsdsdssd'
+    importe:
+      type: number
+      label: Importe
+      required: true
+    fecha:
+      label: Fecha
+      type: date
+  views:
+    add:
+      fields:
+        - importe
+        - concepto
+        - fecha
+    edit:
+      fields:
+        - importe
+        - concepto
+        - fecha
+    list:
+      fields:
+        - importe
+        - concepto
+        - fecha
+      actions:
+        - edit
+        - delete
+balance:
+  fields:
+    periodo:
+      label: Periodo
+      type: month
+    importe_total_ingresos:
+      type: number
+      label: Total ingresos
+    importe_total_egresos:
+      type: number
+      label: Total egresos
+    importe_saldo:
+      type: number
+      label: Saldo
+  views:
+    list:
+      fields:
+        - periodo
+        - importe_total_ingresos
+        - importe_total_egresos
+        - importe_saldo
+      actions:
+        - edit
+        - delete
+balance-movimiento:
+  fields:
+    importe:
+      type: number
+      label: Importe
+    concepto:
+      type: text
+      label: Concepto
+      required: true
+    tipo:
+      type: text
+      label: Tipo
+      required: true
+  views:
+    list:
+      fields:
+        - importe
+        - concepto
+        - tipo
+      actions:
+        - edit
+        - delete
+tarjeta:
+  fields:
+    nombre:
+      type: text
+      label: Concepto
+      required: true
+    banco:
+      type: text
+      label: Concepto
+      required: true
+  views:
+    list:
+      fields:
+        - nombre
+        - banco
+      actions:
+        - edit
+        - delete

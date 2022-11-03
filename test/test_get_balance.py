@@ -1,7 +1,7 @@
 from unittest.mock import Mock
 from fastapi.testclient import TestClient
 
-from routers.balances import add_balance
+from routers import add_balance
 from schemas import BalanceInput, User, Balance
 from expenses import app
 

@@ -8,6 +8,7 @@ from date_utils import DateUtils
 
 pwd_context = CryptContext(schemes=["bcrypt"])
 
+
 class User(SQLModel, table=True):
     id: int | None = Field(primary_key=True, default=None)
     username: str = Field(sa_column=Column(VARCHAR, unique=True, index=True))
@@ -19,9 +20,11 @@ class User(SQLModel, table=True):
     def verify_password(self, password):
         return pwd_context.verify(password, self.password_hash)
 
+
 class UserOutput(SQLModel):
     id: int
     username: str
+
 
 class BalanceMovimientoInput(SQLModel):
     importe: float
@@ -211,10 +214,10 @@ class GastoTarjeta(GastoTarjetaInput, table=True):
         nro_cuota = nro_cuota + dif_date.months
         return nro_cuota
 
-
     @nro_cuota.setter
     def nro_cuota(self, value):
         self.nro_cuota = value
+
 
 class IngresoExtraInput(SQLModel):
     importe: float
@@ -280,6 +283,14 @@ class Tarjeta(TarjetaInput, table=True):
     debitos_automaticos: list[DebitoAutomatico] = Relationship(back_populates="tarjeta")
     consumos: list[GastoTarjeta] = Relationship(back_populates="tarjeta")
 
+    @property
+    def label(self):
+        return f"{self.nombre} {self.banco}"
+
+    @label.setter
+    def label(self, value):
+        self.label = value
+
 
 class GastoCategoriaInput(SQLModel):
     nombre: str
@@ -301,6 +312,14 @@ class GastoCategoria(GastoCategoriaInput, table=True):
     gastos_fijos: list[GastoFijo] = Relationship(back_populates="categoria")
     gastos_tarjetas: list[GastoTarjeta] = Relationship(back_populates="categoria")
     movimientos: list[BalanceMovimiento] = Relationship(back_populates="categoria")
+
+    @property
+    def label(self):
+        return f"{self.nombre}"
+
+    @label.setter
+    def label(self, value):
+        self.label = value
 
 
 class GastoTarjetaOutput(SQLModel):
@@ -326,3 +345,16 @@ class GastoFijoOutput(SQLModel):
     concepto: str
     activo: bool
     categoria: GastoCategoria
+
+
+class TarjetaOutput(SQLModel):
+    id: int
+    nombre: str
+    banco: str
+    label: str
+
+
+class GastoCategoriaOutput(SQLModel):
+    id: int
+    nombre: str
+    label: str

@@ -6,8 +6,8 @@ from db import get_session, get_count
 from helpers.egresos_helper import EgresosHelper
 from schemas import Balance, BalanceInput, BalanceMovimiento, BalanceOutput, User
 from helpers.balances_helper import BalancesHelper
-from list_response_model import ListResponseModel
-from routers.auth import get_current_user
+from list_response_models.list_response_model import ListResponseModel
+from routers.api.auth import get_current_user
 
 router = APIRouter(prefix="/api/balance", tags=["balance"])
 
