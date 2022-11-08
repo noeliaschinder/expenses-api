@@ -6,7 +6,7 @@ from db import get_session, get_count
 from schemas import GastoTarjeta, GastoTarjetaInput, GastoTarjetaOutput, User
 from helpers.egresos_helper import EgresosHelper
 from enums import PeriodoAplicacionConsumo
-from routers.api.auth import get_current_user
+from routers.auth import get_current_user
 from exceptions import BadExpenseException
 from list_response_models.list_response_model import ListResponseModel
 from list_response_models.gasto_tarjeta_list_response_model import GastoTarjetaListResponseModel

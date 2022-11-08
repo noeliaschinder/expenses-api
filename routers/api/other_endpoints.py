@@ -2,7 +2,7 @@ from fastapi import Depends, HTTPException, APIRouter
 
 from list_response_models.list_response_model import ListResponseModel
 from schemas import User
-from routers.api.auth import get_current_user
+from routers.auth import get_current_user
 from enums import PeriodoAplicacionConsumo
 
 router = APIRouter(prefix="/api", tags=["extra"])

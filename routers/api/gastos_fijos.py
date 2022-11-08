@@ -4,7 +4,7 @@ from sqlmodel import Session, select
 from db import get_session, get_count
 from helpers.egresos_helper import EgresosHelper
 from schemas import GastoFijo, GastoFijoInput, User
-from routers.api.auth import get_current_user
+from routers.auth import get_current_user
 from list_response_models.list_response_model import ListResponseModel
 
 router = APIRouter(prefix="/api/gasto-fijo", tags=["gastos_fijos"])

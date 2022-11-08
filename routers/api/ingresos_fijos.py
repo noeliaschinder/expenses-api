@@ -5,7 +5,7 @@ from db import get_session, get_count
 from helpers.egresos_helper import EgresosHelper
 from list_response_models.list_response_model import ListResponseModel
 from schemas import IngresoFijo, IngresoFijoInput, User
-from routers.api.auth import get_current_user
+from routers.auth import get_current_user
 
 router = APIRouter(prefix="/api/ingreso-fijo", tags=["ingresos_fijos"])
 

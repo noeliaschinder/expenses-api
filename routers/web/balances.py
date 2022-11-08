@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Request
-from starlette.responses import HTMLResponse, RedirectResponse
+from fastapi import APIRouter, Request, Depends
+from starlette.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from common_web import get_page_params, call_api
 from date_utils import DateUtils
+from routers.auth import manager
 
 router = APIRouter()
 
@@ -39,7 +40,7 @@ def get_balance_mes_en_curso(request: Request):
 
 
 @router.get("/balance-listado", response_class=HTMLResponse)
-def get_balance(request: Request):
+def get_balance(request: Request, user=Depends(manager)):
     rows = call_api(f'/balance')
     return templates.TemplateResponse(
         "list.html",

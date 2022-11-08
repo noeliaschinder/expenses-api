@@ -5,7 +5,7 @@ from db import get_session, get_count
 from list_response_models.list_response_model import ListResponseModel
 from list_response_models.tarjeta_list_response_model import TarjetaListResponseModel
 from schemas import Tarjeta, TarjetaInput, User
-from routers.api.auth import get_current_user
+from routers.auth import get_current_user
 
 router = APIRouter(prefix="/api/tarjeta", tags=["tarjetas"])
 
