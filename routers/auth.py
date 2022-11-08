@@ -6,47 +6,51 @@ from sqlmodel import Session, select
 from starlette import status
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
-from jose import JWTError, jwt
+from jose import jwt
 from starlette.responses import RedirectResponse
 from starlette.templating import Jinja2Templates
-
+from exceptions import NotAuthenticatedException
 from db import get_session
 from schemas import UserOutput, User
 from dotenv import load_dotenv
 from fastapi_login.exceptions import InvalidCredentialsException  # Exception class
 
-URL_PREFIX = "/auth"
-router = APIRouter(prefix=URL_PREFIX)
-
 load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY')
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
+URL_PREFIX = "/auth"
 
-# oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{URL_PREFIX}/token")
-
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+manager = LoginManager(SECRET_KEY, token_url=f'{URL_PREFIX}/login')
+router = APIRouter(prefix=URL_PREFIX)
 
-manager = LoginManager(SECRET_KEY, token_url=f'{URL_PREFIX}/token')
+
+@manager.user_loader()
+def load_user(username: str, session: Session):  # could also be an asynchronous function
+    query = select(User).where(User.username == username)
+    user = session.exec(query).first()
+    return user
+
+
+# This will be deprecated in the future
+# set your exception when initiating the instance
+# manager = LoginManager(..., custom_exception=NotAuthenticatedException)
+manager.not_authenticated_exception = NotAuthenticatedException
+
 templates = Jinja2Templates(directory="templates")
-
-
-class NotAuthenticatedException(Exception):
-    pass
 
 
 # these two argument are mandatory
 def exc_handler(request, exc):
     return RedirectResponse(url='/auth/login')
 
-
-def get_current_user(token: str = Depends(oauth2_scheme),
-                     session: Session = Depends(get_session)) -> UserOutput:
+# used in api
+def get_current_user(token: str = Depends(oauth2_scheme), session: Session = Depends(get_session)) -> UserOutput:
     payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     username: str = payload.get("sub")
-    query = select(User).where(User.username == username)
-    user = session.exec(query).first()
+    user = load_user(username, session)
     if user:
         return UserOutput.from_orm(user)
     else:
@@ -76,10 +80,8 @@ def loginwithCreds(request: Request):
 
 
 @router.post("/login")
-def login(form_data: OAuth2PasswordRequestForm = Depends(),
-          session: Session = Depends(get_session)):
-    query = select(User).where(User.username == form_data.username)
-    user = session.exec(query).first()
+def web_login(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
+    user = load_user(form_data.username, session)
     if user and user.verify_password(form_data.password):
         access_token = create_access_token(data={"sub": user.username})  # type: ignore
         resp = RedirectResponse(url="/private", status_code=status.HTTP_302_FOUND)
@@ -90,13 +92,10 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(),
 
 
 @router.post("/token")
-async def login(form_data: OAuth2PasswordRequestForm = Depends(),
-                session: Session = Depends(get_session)):
-    query = select(User).where(User.username == form_data.username)
-    user = session.exec(query).first()
+def api_login(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
+    user = load_user(form_data.username, session)
     if user and user.verify_password(form_data.password):
         access_token = create_access_token(data={"sub": user.username})  # type: ignore
         return {"access_token": access_token, "token_type": "bearer"}
     else:
-        raise HTTPException(status_code=400, detail="Incorrect username or password")
-
+        raise InvalidCredentialsException

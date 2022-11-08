@@ -5,28 +5,21 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import SQLModel
 from starlette.responses import JSONResponse, RedirectResponse
 from starlette.status import HTTP_422_UNPROCESSABLE_ENTITY
-
-from exceptions import BadExpenseException
+from exceptions import BadExpenseException, NotAuthenticatedException
 from db import engine
 from routers.api import ingresos_extras, ingresos_fijos, gasto_categorias, gastos_extras, balances, \
-    debitos_automaticos, gastos_tarjetas, gastos_fijos, tarjetas, other_endpoints # , auth
-from routers.web import main, balances as balances_web #, auth as auth_web
-from routers.auth import manager, NotAuthenticatedException, exc_handler
+    debitos_automaticos, gastos_tarjetas, gastos_fijos, tarjetas, other_endpoints  # , auth
+from routers.web import main, balances as balances_web  # , auth as auth_web
+from routers.auth import exc_handler
 from routers import auth
 
 from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(title="Expenses API")
 
-# This will be deprecated in the future
-# set your exception when initiating the instance
-# manager = LoginManager(..., custom_exception=NotAuthenticatedException)
-manager.not_authenticated_exception = NotAuthenticatedException
 # You also have to add an exception handler to your app instance
 app.add_exception_handler(NotAuthenticatedException, exc_handler)
-
 app.mount("/static", StaticFiles(directory="static"), name="static")
-
 app.include_router(auth.router)
 app.include_router(gasto_categorias.router)
 app.include_router(gastos_extras.router)
@@ -39,7 +32,7 @@ app.include_router(tarjetas.router)
 app.include_router(debitos_automaticos.router)
 app.include_router(other_endpoints.router)
 
-#app.include_router(auth_web.router)
+# app.include_router(auth_web.router)
 app.include_router(balances_web.router)
 app.include_router(main.router)
 
@@ -55,6 +48,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 @app.on_event("startup")
 def on_startup():
