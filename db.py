@@ -4,7 +4,7 @@ from sqlalchemy.sql.expression import func, alias
 engine = create_engine(
     "sqlite:///db/expenses.db",
     connect_args={"check_same_thread": False},
-    echo=True
+    echo=False
 )
 
 

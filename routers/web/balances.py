@@ -3,12 +3,13 @@ from starlette.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from common_web import get_page_params, call_api
 from date_utils import DateUtils
+#from routers.auth import get_logged_user
 from routers.auth import manager
+from schemas import User
 
 router = APIRouter()
 
 templates = Jinja2Templates(directory="templates")
-
 
 @router.get("/balance-mes-en-curso", response_class=HTMLResponse)
 def get_balance_mes_en_curso(request: Request):
@@ -40,7 +41,7 @@ def get_balance_mes_en_curso(request: Request):
 
 
 @router.get("/balance-listado", response_class=HTMLResponse)
-def get_balance(request: Request, user=Depends(manager)):
+def get_balance(request: Request, user: User = Depends(manager)):
     rows = call_api(f'/balance')
     return templates.TemplateResponse(
         "list.html",

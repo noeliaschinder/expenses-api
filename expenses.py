@@ -10,15 +10,13 @@ from db import engine
 from routers.api import ingresos_extras, ingresos_fijos, gasto_categorias, gastos_extras, balances, \
     debitos_automaticos, gastos_tarjetas, gastos_fijos, tarjetas, other_endpoints  # , auth
 from routers.web import main, balances as balances_web  # , auth as auth_web
-from routers.auth import exc_handler
+from routers.auth import manager
 from routers import auth
 
 from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(title="Expenses API")
 
-# You also have to add an exception handler to your app instance
-app.add_exception_handler(NotAuthenticatedException, exc_handler)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(auth.router)
 app.include_router(gasto_categorias.router)
@@ -62,6 +60,30 @@ async def unicorn_exception_handler(request: Request, exc: BadExpenseException):
         content={"message": f"Bad Expense Exception: {exc}"},
     )
 
+
+@app.exception_handler(NotAuthenticatedException)
+def auth_exception_handler(request: Request, exc: NotAuthenticatedException):
+    """
+    Redirect the user to the login page if not logged in
+    """
+    return RedirectResponse(url='/auth/login')
+
+
+
+
+# You also have to add an exception handler to your app instance
+# app.add_exception_handler(NotAuthenticatedException, exc_handler)
+
+manager.useRequest(app)
+#
+# @app.middleware("http")
+# async def add_process_time_header(request: Request, call_next):
+#     print('USER')
+#     print(request.state)
+#     response = await call_next(request)
+#     print('USER')
+#     print(request.state.user)
+#     return response
 
 if __name__ == "__main__":
     uvicorn.run("expenses:app", reload=True)
