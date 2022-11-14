@@ -1,7 +1,7 @@
 function getToken(){
     var token = '';
     $.ajax({
-       url: 'http://127.0.0.1:8000/auth/token/',
+       url: getLocalURL() + '/auth/token/',
        type: 'post',
        data: {username:'noelia', password: 'test123456'},
        async: false,
@@ -15,11 +15,16 @@ function getToken(){
     return token;
 }
 
+function getLocalURL(){
+    return window.location.protocol + "//" + window.location.host;
+}
+
 function getApiResults(uri){
     var token = getToken();
     var results = {};
+    console.log(getLocalURL());
     $.ajax({
-       url: 'http://127.0.0.1:8000/api' + uri,
+       url: getLocalURL() + '/api' + uri,
        method: 'GET',
        contentType: 'application/json',
        async: false,
@@ -40,7 +45,7 @@ function postToApi(uri, bodyParams){
     var token = getToken();
     var results = {};
     $.ajax({
-       url: 'http://127.0.0.1:8000/api' + uri,
+       url: getLocalURL() + '/api' + uri,
        method: 'post',
        data: bodyParams,
        dataType:'json',
@@ -63,7 +68,7 @@ function putToApi(uri, bodyParams){
     var token = getToken();
     var results = {};
     $.ajax({
-       url: 'http://127.0.0.1:8000/api' + uri,
+       url: getLocalURL() + '/api' + uri,
        method: 'put',
        data: bodyParams,
        dataType:'json',

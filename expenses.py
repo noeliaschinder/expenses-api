@@ -69,21 +69,7 @@ def auth_exception_handler(request: Request, exc: NotAuthenticatedException):
     return RedirectResponse(url='/auth/login')
 
 
-
-
-# You also have to add an exception handler to your app instance
-# app.add_exception_handler(NotAuthenticatedException, exc_handler)
-
 manager.useRequest(app)
-#
-# @app.middleware("http")
-# async def add_process_time_header(request: Request, call_next):
-#     print('USER')
-#     print(request.state)
-#     response = await call_next(request)
-#     print('USER')
-#     print(request.state.user)
-#     return response
 
 if __name__ == "__main__":
     uvicorn.run("expenses:app", reload=True)
