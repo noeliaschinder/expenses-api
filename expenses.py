@@ -1,4 +1,5 @@
 import uvicorn
+import os
 from fastapi import FastAPI
 from fastapi import Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,7 +18,7 @@ from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(title="Expenses API")
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount(os.getcwd() + "/static", StaticFiles(directory="static"), name="static")
 app.include_router(auth.router)
 app.include_router(gasto_categorias.router)
 app.include_router(gastos_extras.router)
