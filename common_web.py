@@ -1,6 +1,16 @@
 import yaml
 from pathlib import Path
 import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+BASE_URL = os.getenv('BASE_URL')
+API_MAIN_USERNAME = os.getenv('API_MAIN_USERNAME')
+API_MAIN_PASSWORD = os.getenv('API_MAIN_PASSWORD')
+
+script_dir = os.path.dirname(__file__)
+abs_file_path = os.path.join(script_dir, "config/")
 
 
 def get_page_params(request, entity, action, rows=None, entity_id: int = '', entityObject: dict = None):
@@ -20,39 +30,34 @@ def get_page_params(request, entity, action, rows=None, entity_id: int = '', ent
 
 
 def get_menu_config():
-    menu = yaml.safe_load(Path('config/menu.yaml').read_text())
+    menu = yaml.safe_load(Path(f'{abs_file_path}menu.yaml').read_text())
     return menu
 
 
 def get_view_config(entity, action):
-    config = yaml.safe_load(Path('config/config.yaml').read_text())
+    config = yaml.safe_load(Path(f'{abs_file_path}config.yaml').read_text())
     entity_config = config[entity]
-    # fields_settings = entity_config['fields']
-    # action_fields = entity_config['views'][action]['fields']
-    # for field in action_fields:
-    #     print(fields_settings[field])
     return entity_config['views'][action]['fields']
 
 
 def get_fields_config(entity):
-    config = yaml.safe_load(Path('config/config.yaml').read_text())
+    config = yaml.safe_load(Path(f'{abs_file_path}config.yaml').read_text())
     entity_config = config[entity]
     return entity_config['fields']
 
 
 def get_entity_config(entity):
-    config = yaml.safe_load(Path('config/config.yaml').read_text())
+    config = yaml.safe_load(Path(f'{abs_file_path}config.yaml').read_text())
     return config[entity]
 
 
 def call_api(uri, method: str = 'get'):
-    api_url = "http://127.0.0.1:8000/auth/token/"
-    auth_response = requests.post(api_url, {'username': 'noelia', 'password': 'test123456'}).json()
+    api_url = f"{BASE_URL}/auth/token/"
+    auth_response = requests.post(api_url, {'username': API_MAIN_USERNAME, 'password': API_MAIN_PASSWORD}).json()
     token = auth_response['access_token']
-    api_url = f"http://127.0.0.1:8000/api{uri}"
+    api_url = f"{BASE_URL}/api{uri}"
     if method == 'get':
         response = requests.get(api_url, headers={'Authorization': 'Bearer ' + token})
         return response.json()
     elif method == 'delete':
         requests.delete(api_url, headers={'Authorization': 'Bearer ' + token})
-

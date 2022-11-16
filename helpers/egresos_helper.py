@@ -148,11 +148,7 @@ class EgresosHelper():
             if movimiento.entity == 'DebitosAutomaticos':
                 gasto = session.get(DebitoAutomatico, movimiento_id)
             elif movimiento.entity == 'GastosTarjetas':
-                #gasto = session.get(GastoTarjeta, movimiento_id)
                 gasto = session.get(GastoTarjeta, movimiento_id)
-                #gasto2 = GastoTarjetaOutput()
-                #gasto.nro_cuota = gasto.nro_cuota
-                print(gasto.nro_cuota)
             else:
                 continue
             tarjeta_id = gasto.tarjeta.id

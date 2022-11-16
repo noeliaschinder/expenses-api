@@ -1,8 +1,12 @@
 from sqlmodel import create_engine, Session
 from sqlalchemy.sql.expression import func, alias
+import os
+
+script_dir = os.path.dirname(__file__)
+abs_file_path = os.path.join(script_dir, "db/")
 
 engine = create_engine(
-    "sqlite:///db/expenses.db",
+    f"sqlite:///{abs_file_path}/expenses.db",
     connect_args={"check_same_thread": False},
     echo=False
 )

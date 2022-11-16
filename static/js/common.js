@@ -1,5 +1,6 @@
 function getToken(){
     var token = '';
+    //todo replace user hardcode
     $.ajax({
        url: getLocalURL() + '/auth/token/',
        type: 'post',
