@@ -1,3 +1,4 @@
+import os
 from fastapi import APIRouter, Request, Depends
 from starlette.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -9,7 +10,9 @@ from schemas import User
 
 router = APIRouter()
 
-templates = Jinja2Templates(directory="templates")
+script_dir = os.path.dirname(__file__)
+abs_file_path = os.path.join(script_dir, "../templates/")
+templates = Jinja2Templates(directory=abs_file_path)
 
 @router.get("/balance-mes-en-curso", response_class=HTMLResponse)
 def get_balance_mes_en_curso(request: Request):

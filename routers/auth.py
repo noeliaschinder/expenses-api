@@ -15,6 +15,9 @@ from schemas import UserOutput, User
 from dotenv import load_dotenv
 from fastapi_login.exceptions import InvalidCredentialsException  # Exception class
 
+script_dir = os.path.dirname(__file__)
+abs_file_path = os.path.join(script_dir, "../templates/")
+
 load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY')
 ALGORITHM = "HS256"
@@ -37,7 +40,7 @@ def load_user(username: str):  # could also be an asynchronous function
     return found_user
 
 
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory=abs_file_path)
 
 
 # these two argument are mandatory
