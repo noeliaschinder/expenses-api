@@ -17,7 +17,9 @@ from routers import auth
 from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(title="Expenses API")
-app.mount(os.path.dirname(__file__) + "/static", StaticFiles(directory="static"), name="static")
+script_dir = os.path.dirname(__file__)
+st_abs_file_path = os.path.join(script_dir, "static/")
+app.mount("/static", StaticFiles(directory=st_abs_file_path), name="static")
 app.include_router(auth.router)
 app.include_router(gasto_categorias.router)
 app.include_router(gastos_extras.router)
