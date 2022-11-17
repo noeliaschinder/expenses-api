@@ -13,7 +13,12 @@ script_dir = os.path.dirname(__file__)
 abs_file_path = os.path.join(script_dir, "config/")
 
 
-def get_page_params(request, entity, action, rows=None, entity_id: int = '', entityObject: dict = None):
+def get_page_params(request, entity=None, action=None, rows=None, entity_id: int=None, entity_object: dict=None):
+    view_config = None
+    fields_config = None
+    if entity is not None:
+        view_config = get_view_config(entity, action)
+        fields_config = get_fields_config(entity)
     return {
         "entity": entity,
         "site_name": "Expenses App",
@@ -22,10 +27,10 @@ def get_page_params(request, entity, action, rows=None, entity_id: int = '', ent
         "title": f"{entity}-{action}",
         "menu": get_menu_config(),
         "rows": rows,
-        "view_config": get_view_config(entity, action),
-        "fields_config": get_fields_config(entity),
+        "view_config": view_config,
+        "fields_config": fields_config,
         "entityId": entity_id,
-        "entityObject": entityObject
+        "entityObject": entity_object
     }
 
 

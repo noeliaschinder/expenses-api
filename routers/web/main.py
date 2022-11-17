@@ -12,12 +12,21 @@ script_dir = os.path.dirname(__file__)
 abs_file_path = os.path.join(script_dir, "../../templates/")
 templates = Jinja2Templates(directory=abs_file_path)
 
+
+@router.get("/", response_class=HTMLResponse)
+def home_action(request: Request, user: User = Depends(manager)):
+    return templates.TemplateResponse(
+        "home.html",
+        get_page_params(request=request)
+    )
+
+
 @router.get("/{entity}/edit/{id}", response_class=HTMLResponse)
 def edit_action(request: Request, entity: str, id: int, user: User = Depends(manager)):
-    entityObject = call_api(f'/{entity}/{id}')
+    entity_object = call_api(f'/{entity}/{id}')
     return templates.TemplateResponse(
         "form.html",
-        get_page_params(request=request, entity=entity, action='edit', entity_id=id, entityObject=entityObject)
+        get_page_params(request=request, entity=entity, action='edit', entity_id=id, entity_object=entity_object)
     )
 
 
@@ -51,4 +60,3 @@ def list_action(request: Request, entity: str, user: User = Depends(manager)):
         "list.html",
         get_page_params(request=request, entity=entity, action='list', rows=rows)
     )
-

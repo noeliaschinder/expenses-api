@@ -85,7 +85,7 @@ def loginwithCreds(request: Request):
 def web_login(form_data: OAuth2PasswordRequestForm = Depends(),):
     user = load_user(form_data.username)
     if user and user.verify_password(form_data.password):
-        resp = RedirectResponse(url="/private", status_code=status.HTTP_302_FOUND)
+        resp = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
         access_token = manager.create_access_token(data=dict(sub=user.username))
         manager.set_cookie(resp, access_token)
         return resp
