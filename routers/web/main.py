@@ -1,17 +1,19 @@
 import os
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Depends
 from starlette.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from common_web import get_page_params, call_api, get_entity_config
+from routers.auth import manager
+from schemas import User
 
 router = APIRouter()
 
 script_dir = os.path.dirname(__file__)
-abs_file_path = os.path.join(script_dir, "../templates/")
+abs_file_path = os.path.join(script_dir, "../../templates/")
 templates = Jinja2Templates(directory=abs_file_path)
 
 @router.get("/{entity}/edit/{id}", response_class=HTMLResponse)
-def edit_action(request: Request, entity: str, id: int):
+def edit_action(request: Request, entity: str, id: int, user: User = Depends(manager)):
     entityObject = call_api(f'/{entity}/{id}')
     return templates.TemplateResponse(
         "form.html",
@@ -20,13 +22,13 @@ def edit_action(request: Request, entity: str, id: int):
 
 
 @router.get("/{entity}/delete/{id}", response_class=RedirectResponse)
-def delete_action(entity: str, id: int):
+def delete_action(entity: str, id: int, user: User = Depends(manager)):
     call_api(uri=f'/{entity}/{id}', method='delete')
     return RedirectResponse(f'/{entity}/')
 
 
 @router.get("/{entity}/add", response_class=HTMLResponse)
-def add_action(request: Request, entity: str):
+def add_action(request: Request, entity: str, user: User = Depends(manager)):
     return templates.TemplateResponse(
         "form.html",
         get_page_params(request=request, entity=entity, action='add')
@@ -34,7 +36,7 @@ def add_action(request: Request, entity: str):
 
 
 @router.get("/{entity}", response_class=HTMLResponse)
-def list_action(request: Request, entity: str):
+def list_action(request: Request, entity: str, user: User = Depends(manager)):
     entity_config = get_entity_config(entity)
     filters = []
     filters_query = ''

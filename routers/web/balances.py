@@ -4,18 +4,17 @@ from starlette.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from common_web import get_page_params, call_api
 from date_utils import DateUtils
-#from routers.auth import get_logged_user
 from routers.auth import manager
 from schemas import User
 
 router = APIRouter()
 
 script_dir = os.path.dirname(__file__)
-abs_file_path = os.path.join(script_dir, "../templates/")
+abs_file_path = os.path.join(script_dir, "../../templates/")
 templates = Jinja2Templates(directory=abs_file_path)
 
 @router.get("/balance-mes-en-curso", response_class=HTMLResponse)
-def get_balance_mes_en_curso(request: Request):
+def get_balance_mes_en_curso(request: Request, user: User = Depends(manager)):
     current_period = DateUtils.get_current_month_period()
     results = call_api(f'/balance/{current_period}/movimientos')
     rows = []
