@@ -22,6 +22,10 @@ gasto-fijo:
     periodo_fin:
       label: Mes de Finalización
       type: month
+  actions:
+    - edit
+    - delete
+    - add
   views:
     add:
       fields:
@@ -41,9 +45,6 @@ gasto-fijo:
       fields:
         - importe
         - concepto
-      actions:
-        - edit
-        - delete
 gasto-extra:
   fields:
     concepto:
@@ -64,6 +65,10 @@ gasto-extra:
     fecha:
       label: Fecha
       type: date
+  actions:
+    - edit
+    - delete
+    - add
   views:
     add:
       fields:
@@ -81,9 +86,6 @@ gasto-extra:
       fields:
         - importe
         - concepto
-      actions:
-        - edit
-        - delete
 gasto-tarjeta:
   query_filters:
     consumos_activos:
@@ -141,6 +143,10 @@ gasto-tarjeta:
       label: Importe cuota
       required: false
       submit_method: get
+  actions:
+    - edit
+    - delete
+    - add
   views:
     add:
       fields:
@@ -169,9 +175,6 @@ gasto-tarjeta:
         - concepto
         - importe
         - importe_total
-      actions:
-        - edit
-        - delete
 debito-automatico:
   fields:
     concepto:
@@ -203,6 +206,10 @@ debito-automatico:
     periodo_fin:
       label: Mes de Finalización
       type: month
+  actions:
+    - edit
+    - delete
+    - add
   views:
     add:
       fields:
@@ -224,9 +231,6 @@ debito-automatico:
       fields:
         - importe
         - concepto
-      actions:
-        - edit
-        - delete
 ingreso-fijo:
   fields:
     concepto:
@@ -238,6 +242,10 @@ ingreso-fijo:
       type: number
       label: Importe
       required: true
+  actions:
+    - edit
+    - delete
+    - add
   views:
     add:
       fields:
@@ -251,9 +259,6 @@ ingreso-fijo:
       fields:
         - importe
         - concepto
-      actions:
-        - edit
-        - delete
 ingreso-extra:
   fields:
     concepto:
@@ -268,6 +273,10 @@ ingreso-extra:
     fecha:
       label: Fecha
       type: date
+  actions:
+    - edit
+    - delete
+    - add
   views:
     add:
       fields:
@@ -284,9 +293,6 @@ ingreso-extra:
         - importe
         - concepto
         - fecha
-      actions:
-        - edit
-        - delete
 balance:
   fields:
     periodo:
@@ -301,6 +307,8 @@ balance:
     importe_saldo:
       type: number
       label: Saldo
+  actions:
+    - view-more
   views:
     list:
       fields:
@@ -308,9 +316,6 @@ balance:
         - importe_total_ingresos
         - importe_total_egresos
         - importe_saldo
-      actions:
-        - edit
-        - delete
 balance-movimiento:
   fields:
     importe:
@@ -324,15 +329,14 @@ balance-movimiento:
       type: text
       label: Tipo
       required: true
+  actions:
+    - view-more
   views:
     list:
       fields:
         - importe
         - concepto
         - tipo
-      actions:
-        - edit
-        - delete
 tarjeta:
   fields:
     nombre:
@@ -343,11 +347,12 @@ tarjeta:
       type: text
       label: Concepto
       required: true
+  actions:
+    - edit
+    - delete
+    - add
   views:
     list:
       fields:
         - nombre
         - banco
-      actions:
-        - edit
-        - delete

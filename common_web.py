@@ -16,9 +16,12 @@ abs_file_path = os.path.join(script_dir, "config/")
 def get_page_params(request, entity=None, action=None, rows=None, entity_id: int=None, entity_object: dict=None):
     view_config = None
     fields_config = None
+    actions = []
     if entity is not None:
         view_config = get_view_config(entity, action)
         fields_config = get_fields_config(entity)
+        actions = get_actions_config(entity)
+    print(actions)
     return {
         "entity": entity,
         "site_name": "Expenses App",
@@ -30,7 +33,8 @@ def get_page_params(request, entity=None, action=None, rows=None, entity_id: int
         "view_config": view_config,
         "fields_config": fields_config,
         "entityId": entity_id,
-        "entityObject": entity_object
+        "entityObject": entity_object,
+        "actions": actions
     }
 
 
@@ -49,6 +53,12 @@ def get_fields_config(entity):
     config = yaml.safe_load(Path(f'{abs_file_path}config.yaml').read_text())
     entity_config = config[entity]
     return entity_config['fields']
+
+
+def get_actions_config(entity):
+    config = yaml.safe_load(Path(f'{abs_file_path}config.yaml').read_text())
+    entity_config = config[entity]
+    return entity_config['actions']
 
 
 def get_entity_config(entity):
