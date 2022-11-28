@@ -316,6 +316,19 @@ balance:
         - importe_total_ingresos
         - importe_total_egresos
         - importe_saldo
+    view-more:
+      resumen:
+        - periodo
+        - importe_total_ingresos
+        - importe_total_egresos
+        - importe_saldo
+      detalle:
+        key: movimientos
+      fields:
+        - periodo
+        - importe_total_ingresos
+        - importe_total_egresos
+        - importe_saldo
 balance-movimiento:
   fields:
     importe:

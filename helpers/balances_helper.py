@@ -65,3 +65,21 @@ class BalancesHelper():
             else:
                 sum = sum - movimiento.importe
         return sum
+
+    @classmethod
+    def group_consumos_by_tarjeta(cls, balance_id, movimientos, session: Session):
+        rows = []
+        for movimiento in movimientos:
+            if movimiento.entity != 'DebitosAutomaticos' and movimiento.entity != 'GastosTarjetas':
+                rows.append(movimiento)
+        resumen_tarjetas = EgresosHelper.get_resumen_tarjetas_from_movimientos(movimientos, session)
+        for resumen in resumen_tarjetas:
+            movimiento = BalanceMovimiento(
+                concepto=f"{resumen['tarjeta'].nombre} {resumen['tarjeta'].banco}",
+                importe=resumen['total'],
+                tipo='egreso',
+                entity_id=resumen['tarjeta'].id,
+                balance_id=balance_id
+            )
+            rows.append(movimiento)
+        return rows

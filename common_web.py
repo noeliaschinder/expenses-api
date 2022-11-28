@@ -46,7 +46,7 @@ def get_menu_config():
 def get_view_config(entity, action):
     config = yaml.safe_load(Path(f'{abs_file_path}config.yaml').read_text())
     entity_config = config[entity]
-    return entity_config['views'][action]['fields']
+    return entity_config['views'][action]
 
 
 def get_fields_config(entity):

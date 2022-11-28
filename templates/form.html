@@ -5,7 +5,7 @@
     <input type="hidden" name="entity" value="{{entity}}" id="entity">
     <input type="hidden" name="action" value="{{action}}" id="action">
 
-    {% for header in view_config %}
+    {% for header in view_config['fields'] %}
         <div class="mb-3">
             {% if fields_config[header]['type'] == 'text' %}
                 <label for="{{header}}" class="form-label">{{fields_config[header]['label']}}</label>

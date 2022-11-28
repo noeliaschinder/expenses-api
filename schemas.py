@@ -72,7 +72,7 @@ class BalanceOutput(SQLModel):
     importe_total_ingresos: float = 0
     importe_total_egresos: float = 0
     importe_saldo: float = 0
-    # movimientos: list
+    movimientos: list[BalanceMovimiento]
 
 
 class DebitoAutomaticoInput(SQLModel):

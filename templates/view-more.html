@@ -1,0 +1,16 @@
+{% extends 'main.html' %}
+{% block content %}
+
+
+    {% for field in view_config['resumen'] %}
+        {{field}}: {{entityObject[field]}} <br>
+    {% endfor %}
+
+
+
+
+{% endblock %}
+
+{% block custom_js %}
+<script src="{{ url_for('static', path='/js/common.js') }}"></script>
+{% endblock %}

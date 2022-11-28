@@ -30,6 +30,15 @@ def edit_action(request: Request, entity: str, id: int, user: User = Depends(man
     )
 
 
+@router.get("/{entity}/view-more/{id}", response_class=HTMLResponse)
+def view_more_action(request: Request, entity: str, id: int, user: User = Depends(manager)):
+    entity_object = call_api(f'/{entity}/{id}')
+    return templates.TemplateResponse(
+        "view-more.html",
+        get_page_params(request=request, entity=entity, action='view-more', entity_id=id, entity_object=entity_object)
+    )
+
+
 @router.get("/{entity}/delete/{id}", response_class=RedirectResponse)
 def delete_action(entity: str, id: int, user: User = Depends(manager)):
     call_api(uri=f'/{entity}/{id}', method='delete')

@@ -43,13 +43,15 @@ def get_balances(session: Session = Depends(get_session), user: User = Depends(g
     return balances
 
 
-@router.get("/{id}", response_model=Balance)
-def get_by_id_balance(id: int, session: Session = Depends(get_session), recalcular: bool = False, user: User = Depends(get_current_user)) -> Balance:
+@router.get("/{id}", response_model=BalanceOutput)
+def get_by_id_balance(id: int, session: Session = Depends(get_session), recalcular: bool = False, group_consumos_by_tarjeta: bool = False, user: User = Depends(get_current_user)) -> Balance:
     """Gets balance by id from DB"""
     balance = session.get(Balance, id)
     if balance:
         if recalcular:
             BalancesHelper.generar_balance(periodo=balance.periodo, balance=balance, session=session)
+        if group_consumos_by_tarjeta:
+            balance.movimientos = BalancesHelper.group_consumos_by_tarjeta(balance_id=id, movimientos=balance.movimientos, session=session)
         return balance
     else:
         raise HTTPException(status_code=404, detail=f"No 'balance' with id={id}.")

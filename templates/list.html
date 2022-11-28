@@ -13,7 +13,7 @@
         <thead>
         <tr>
             <th scope="col">#</th>
-            {% for header in view_config %}
+            {% for header in view_config['fields'] %}
             <th scope="col">{{header}}</th>
             {% endfor %}
             {% if 'view-more' in actions %}
@@ -31,7 +31,7 @@
         {% for row in rows %}
         <tr>
             <th scope="row">{{row.id}}</th>
-            {% for header in view_config %}
+            {% for header in view_config['fields'] %}
             <th scope="row">{{row[header]}}</th>
             {% endfor %}
             {% if 'view-more' in actions %}
