@@ -21,7 +21,6 @@ def get_page_params(request, entity=None, action=None, rows=None, entity_id: int
         view_config = get_view_config(entity, action)
         fields_config = get_fields_config(entity)
         actions = get_actions_config(entity)
-    print(actions)
     return {
         "entity": entity,
         "site_name": "Expenses App",

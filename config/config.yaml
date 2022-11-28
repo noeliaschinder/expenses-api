@@ -317,18 +317,19 @@ balance:
         - importe_total_egresos
         - importe_saldo
     view-more:
+      api_params:
+        group_consumos_by_tarjeta: true
       resumen:
         - periodo
         - importe_total_ingresos
         - importe_total_egresos
         - importe_saldo
       detalle:
-        key: movimientos
-      fields:
-        - periodo
-        - importe_total_ingresos
-        - importe_total_egresos
-        - importe_saldo
+        movimientos:
+          fields:
+            - concepto
+            - importe
+            - tipo
 balance-movimiento:
   fields:
     importe:

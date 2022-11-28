@@ -1,12 +1,40 @@
 {% extends 'main.html' %}
 {% block content %}
 
-
+<table class="table">
+    <thead>
     {% for field in view_config['resumen'] %}
-        {{field}}: {{entityObject[field]}} <br>
+    <tr>
+        <th scope="col">{{field}}:</th>
+        <th scope="col">{{entityObject[field]}}</th>
+    </tr>
     {% endfor %}
+    </thead>
+</table>
 
-
+{% for key in view_config['detalle'] %}
+<h1>{{key}}</h1>
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        {% for header in view_config['detalle'][key]['fields'] %}
+        <th scope="col">{{header}}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for row in entityObject[key] %}
+    <tr>
+        <th scope="row">{{row.id}}</th>
+        {% for header in view_config['detalle'][key]['fields'] %}
+        <th scope="row">{{row[header]}}</th>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endfor %}
 
 
 {% endblock %}

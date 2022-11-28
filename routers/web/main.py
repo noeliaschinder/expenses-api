@@ -2,7 +2,7 @@ import os
 from fastapi import APIRouter, Request, Depends
 from starlette.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
-from common_web import get_page_params, call_api, get_entity_config
+from common_web import get_page_params, call_api, get_entity_config, get_view_config
 from routers.auth import manager
 from schemas import User
 
@@ -32,7 +32,12 @@ def edit_action(request: Request, entity: str, id: int, user: User = Depends(man
 
 @router.get("/{entity}/view-more/{id}", response_class=HTMLResponse)
 def view_more_action(request: Request, entity: str, id: int, user: User = Depends(manager)):
-    entity_object = call_api(f'/{entity}/{id}')
+    view_config = get_view_config(entity, 'view-more')
+    params_str = ''
+    if view_config['api_params'] != None:
+        for param in view_config['api_params']:
+            params_str = f"{param}={view_config['api_params'][param]}"
+    entity_object = call_api(f'/{entity}/{id}?{params_str}')
     return templates.TemplateResponse(
         "view-more.html",
         get_page_params(request=request, entity=entity, action='view-more', entity_id=id, entity_object=entity_object)
