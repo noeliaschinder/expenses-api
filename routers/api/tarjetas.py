@@ -1,10 +1,8 @@
 from fastapi import Depends, HTTPException, APIRouter
 from sqlmodel import Session, select
-
 from db import get_session, get_count
-from list_response_models.list_response_model import ListResponseModel
 from list_response_models.tarjeta_list_response_model import TarjetaListResponseModel
-from schemas import Tarjeta, TarjetaInput, User
+from schemas import Tarjeta, TarjetaInput, User, GastoTarjeta, GastoTarjetaOutput
 from routers.auth import get_current_user
 
 router = APIRouter(prefix="/api/tarjeta", tags=["tarjetas"])
@@ -36,6 +34,43 @@ def get_by_id_tarjeta(id: int, session: Session = Depends(get_session),
     tarjeta = session.get(Tarjeta, id)
     if tarjeta:
         return tarjeta
+    else:
+        raise HTTPException(status_code=204, detail=f"No 'tarjeta' with id={id}.")
+
+
+@router.get("/{id}/consumos-activos", response_model=list[GastoTarjetaOutput])
+def get_consumos_activos_by_id_tarjeta(id: int, session: Session = Depends(get_session),
+                                       user: User = Depends(get_current_user)) -> GastoTarjeta:
+    """Gets consumos activos tarjeta by id from DB"""
+    tarjeta = session.get(Tarjeta, id)
+    if tarjeta:
+        query = select(GastoTarjeta).filter_by(tarjeta_id=id)
+        consumos_activos = []
+        consumos = session.exec(query).all()
+        for consumo in consumos:
+            if consumo.consumo_activo:
+                consumos_activos.append(consumo)
+        return consumos_activos
+    else:
+        raise HTTPException(status_code=204, detail=f"No 'tarjeta' with id={id}.")
+
+
+@router.get("/{id}/consumos/{periodo}", response_model=list[GastoTarjetaOutput])
+def get_consumos_by_id_tarjeta_and_periodo(id: int, periodo: str, session: Session = Depends(get_session),
+                                           user: User = Depends(get_current_user)) -> list[GastoTarjetaOutput]:
+    """Gets consumos activos tarjeta by id and periodo from DB"""
+    tarjeta = session.get(Tarjeta, id)
+    if tarjeta:
+        query = select(GastoTarjeta).filter(GastoTarjeta.tarjeta_id == id).filter(
+            GastoTarjeta.periodo_inicio <= periodo).filter(
+            GastoTarjeta.periodo_fin >= periodo)
+        gastos_tarjeta = session.exec(query).all()
+        results = []
+        for gasto in gastos_tarjeta:
+            gasto_tarjeta_orm = GastoTarjetaOutput.from_orm(gasto)
+            gasto_tarjeta_orm.nro_cuota = gasto.calcular_nro_cuota(periodo_a_calcular=periodo)
+            results.append(gasto_tarjeta_orm)
+        return results
     else:
         raise HTTPException(status_code=204, detail=f"No 'tarjeta' with id={id}.")
 

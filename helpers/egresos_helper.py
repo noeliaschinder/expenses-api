@@ -1,7 +1,5 @@
-from datetime import date
 from decimal import Decimal
 
-from dateutil import relativedelta
 from sqlmodel import Session, select
 
 from date_utils import DateUtils
@@ -20,7 +18,6 @@ class EgresosHelper():
             'GastosTarjetas': []
         }
 
-        # query = select(GastoFijo).filter_by(activo=True)
         query = select(GastoFijo).where(GastoFijo.activo == True, GastoFijo.periodo_inicio <= periodo,
                                         (GastoFijo.periodo_fin >= periodo).__or__(GastoFijo.periodo_fin == None).__or__(
                                             GastoFijo.periodo_fin == ""))
@@ -44,7 +41,6 @@ class EgresosHelper():
                 'categoria_id': gasto_extra.categoria_id
             })
 
-        # query = select(DebitoAutomatico).filter_by(activo=True)
         query = select(DebitoAutomatico).where(DebitoAutomatico.activo == True,
                                                DebitoAutomatico.periodo_inicio <= periodo,
                                                (DebitoAutomatico.periodo_fin >= periodo).__or__(
@@ -75,30 +71,7 @@ class EgresosHelper():
                 'categoria_id': gasto.categoria_id
             })
 
-        # totales_tarjetas = {}
-        # consumos_tarjetas = {}
-        # query = select(Tarjeta).filter_by(activo=True)
-        # tarjetas = session.exec(query).all()
-        #
-        # for tarjeta in tarjetas:
-        #     totales_tarjetas[tarjeta.id] = 0
-        #     consumos_tarjetas[tarjeta.id] = {}
-        #
-        # for gasto in gastos_tarjeta + gastos_debito_automatico:
-        #     tarjeta_id = gasto.tarjeta.id
-        #     totales_tarjetas[tarjeta_id] = totales_tarjetas[tarjeta_id] + int(gasto.importe)
-        #     consumos_tarjetas[tarjeta.id] = gasto
-        #
-        # for tarjeta in tarjetas:
-        #     if int(totales_tarjetas[tarjeta.id]) > 0:
-        #         gastos_del_periodo['Tarjetas'].append({
-        #             'concepto': f"{tarjeta.nombre} {tarjeta.banco}",
-        #             'importe': totales_tarjetas[tarjeta.id],
-        #             'entity_id': tarjeta.id
-        #         })
-
         return gastos_del_periodo
-
 
     @classmethod
     def procesar_gasto_tarjeta(cls, gasto_tarjeta: GastoTarjeta, periodo_a_aplicar: PeriodoAplicacionConsumo,
@@ -158,9 +131,9 @@ class EgresosHelper():
         data_resumen = []
         for tarjeta in tarjetas:
             data_resumen.append({
-                "tarjeta": tarjeta ,
-                "total": totales_tarjetas[tarjeta.id] ,
-                "consumos": consumos_tarjetas[tarjeta.id] ,
+                "tarjeta": tarjeta,
+                "total": totales_tarjetas[tarjeta.id],
+                "consumos": consumos_tarjetas[tarjeta.id],
             })
 
         return data_resumen

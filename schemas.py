@@ -201,18 +201,24 @@ class GastoTarjeta(GastoTarjetaInput, table=True):
     def consumo_activo(self, value):
         self.consumo_activo = value
 
-    @property
-    def nro_cuota(self):
-        periodo_actual = date.today()
+    def calcular_nro_cuota(self, periodo_a_calcular=None):
+        if periodo_a_calcular is not None:
+            periodo_actual = DateUtils.periodo_to_date_object(periodo_a_calcular)
+        else:
+            periodo_actual = date.today().replace(day=1)
         periodo_inicio = DateUtils.periodo_to_date_object(self.periodo_inicio)
-        if self.consumo_activo == False or periodo_actual < periodo_inicio:
+        if periodo_actual < periodo_inicio or (periodo_a_calcular is None and self.consumo_activo == False):
             return None
         dif_date = relativedelta.relativedelta(periodo_actual, periodo_inicio)
         nro_cuota = 1
         if dif_date.years > 0:
-            nro_cuota = 12 * dif_date.years
-        nro_cuota = nro_cuota + dif_date.months
+            nro_cuota += 12 * dif_date.years
+        nro_cuota += dif_date.months
         return nro_cuota
+
+    @property
+    def nro_cuota(self):
+        return self.calcular_nro_cuota()
 
     @nro_cuota.setter
     def nro_cuota(self, value):
