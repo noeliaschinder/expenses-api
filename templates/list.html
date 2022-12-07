@@ -16,15 +16,11 @@
             {% for header in view_config['fields'] %}
             <th scope="col">{{header}}</th>
             {% endfor %}
-            {% if 'view-more' in actions %}
-            <th scope="col"></th>
-            {% endif %}
-            {% if 'edit' in actions %}
-            <th scope="col"></th>
-            {% endif %}
-            {% if 'delete' in actions %}
-            <th scope="col"></th>
-            {% endif %}
+            {% for action in actions %}
+                {% if action != 'add' %}
+                    <th scope="col"></th>
+                {% endif %}
+            {% endfor %}
         </tr>
         </thead>
         <tbody>
@@ -34,23 +30,15 @@
             {% for header in view_config['fields'] %}
             <th scope="row">{{row[header]}}</th>
             {% endfor %}
-            {% if 'view-more' in actions %}
-            <th scope="row"><a href="/{{entity}}/view-more/{{row.id}}">
-                <img src="{{ url_for('static', path='/images/icons/view-more.svg') }}" width="16px" height="16px"
-                     alt="Ver más"/>
-            </a></th>
-            {% endif %}
-            {% if 'edit' in actions %}
-            <th scope="row"><a href="/{{entity}}/edit/{{row.id}}">
-                <img src="{{ url_for('static', path='/images/icons/edit.svg') }}" width="16px" alt="Editar"/>
-            </a></th>
-            {% endif %}
-            {% if 'delete' in actions %}
-            <th scope="row"><a href="/{{entity}}/delete/{{row.id}}"
-                               onclick="return confirm('Are you sure you want to delete this item?');">
-                <img src="{{ url_for('static', path='/images/icons/delete.svg') }}" width="16px" alt="Borrar"/>
-            </a></th>
-            {% endif %}
+            {% for action in actions %}
+                {% if action != 'add' %}
+                    <th scope="row"><a href="/{{entity}}/{{action}}/{{row.id}}"
+                                       {% if action == 'delete' %}onclick="return confirm('Are you sure you want to delete this item?');"{% endif %} />
+                        <img src="{{ url_for('static', path='/images/icons/' ~ action ~ '.svg') }}"
+                                 width="16px" height="16px" alt="{{action}}"/>
+                    </a></th>
+                {% endif %}
+            {% endfor %}
         </tr>
         {% endfor %}
         </tbody>

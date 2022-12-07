@@ -343,6 +343,17 @@ class GastoTarjetaOutput(SQLModel):
     categoria: GastoCategoria
 
 
+class DebitoAutomaticoOutput(SQLModel):
+    id: int
+    concepto: str
+    importe: float
+    periodo_inicio: str
+    periodo_fin: str | None = None
+    tarjeta: Tarjeta
+    categoria: GastoCategoria
+    activo: bool = True
+
+
 class GastoFijoOutput(SQLModel):
     id: int
     periodo_inicio: str

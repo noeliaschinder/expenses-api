@@ -365,8 +365,29 @@ tarjeta:
     - edit
     - delete
     - add
+    - ultimo-resumen
   views:
     list:
       fields:
         - nombre
         - banco
+#    consumos-activos:
+#      resumen:
+#        - total
+#      detalle:
+#        consumos-activos:
+#          fields:
+#            - concepto
+#            - importe
+#            - nro_cuota
+#            - cant_cuotas
+#    debitos-automaticos:
+#      resumen:
+#        - total
+#      detalle:
+#        consumos-activos:
+#          fields:
+#            - concepto
+#            - importe
+#            - nro_cuota
+#            - cant_cuotas
