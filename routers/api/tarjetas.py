@@ -51,12 +51,15 @@ def get_ultimo_resumen_by_id_tarjeta(id: int, session: Session = Depends(get_ses
 
         total_a_pagar = 0
 
+        total_consumos_que_se_van = 0
         total_consumos = 0
         for consumo in consumos:
             if consumo.consumo_activo:
                 consumos_activos.append(consumo)
                 total_a_pagar += consumo.importe
                 total_consumos += consumo.importe
+                if consumo.nro_cuota == consumo.cant_cuotas:
+                    total_consumos_que_se_van += consumo.importe
 
         query = select(DebitoAutomatico).filter_by(tarjeta_id=id, activo=True)
         debitos_automaticos_activos = session.exec(query).all()
@@ -72,7 +75,8 @@ def get_ultimo_resumen_by_id_tarjeta(id: int, session: Session = Depends(get_ses
             summary={
                 'total_a_pagar': total_a_pagar,
                 'total_consumos': total_consumos,
-                'total_debitos_automaticos': total_debitos_automaticos
+                'total_debitos_automaticos': total_debitos_automaticos,
+                'total_consumos_que_se_van': total_consumos_que_se_van
             }
         )
     else:

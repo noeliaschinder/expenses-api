@@ -320,10 +320,12 @@ balance:
       api_params:
         group_consumos_by_tarjeta: true
       resumen:
-        - periodo
-        - importe_total_ingresos
-        - importe_total_egresos
-        - importe_saldo
+        key: false
+        fields:
+          - periodo
+          - importe_total_ingresos
+          - importe_total_egresos
+          - importe_saldo
       detalle:
         movimientos:
           fields:
@@ -371,23 +373,25 @@ tarjeta:
       fields:
         - nombre
         - banco
-#    consumos-activos:
-#      resumen:
-#        - total
-#      detalle:
-#        consumos-activos:
-#          fields:
-#            - concepto
-#            - importe
-#            - nro_cuota
-#            - cant_cuotas
-#    debitos-automaticos:
-#      resumen:
-#        - total
-#      detalle:
-#        consumos-activos:
-#          fields:
-#            - concepto
-#            - importe
-#            - nro_cuota
-#            - cant_cuotas
+    ultimo-resumen:
+      type: view-more
+      api-endpoint: '/tarjeta/{entity_id}/ultimo-resumen'
+      resumen:
+        key: summary
+        fields:
+          - total_a_pagar
+          - total_consumos
+          - total_debitos_automaticos
+          - total_consumos_que_se_van
+      detalle:
+        consumos:
+          fields:
+            - fecha
+            - concepto
+            - importe
+            - nro_cuota
+            - cant_cuotas
+        debitos_automaticos:
+          fields:
+            - concepto
+            - importe
